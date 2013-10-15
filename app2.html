@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+  <title>Pure Control</title>
+  <!-- Building blocks -->
+  <link rel="stylesheet" href="style/action_menu.css">
+  <link rel="stylesheet" href="style/buttons.css">
+  <link rel="stylesheet" href="style/confirm.css">
+  <link rel="stylesheet" href="style/edit_mode.css">
+  <link rel="stylesheet" href="style/headers.css">
+  <link rel="stylesheet" href="style/input_areas.css">
+  <link rel="stylesheet" href="style/status.css">
+  <link rel="stylesheet" href="style/switches.css">
+  <link rel="stylesheet" href="style_unstable/drawer.css">
+  <link rel="stylesheet" href="style_unstable/lists.css">
+  <link rel="stylesheet" href="style_unstable/progress_activity.css">
+  <link rel="stylesheet" href="style_unstable/scrolling.css">
+  <link rel="stylesheet" href="style_unstable/seekbars.css">
+  <link rel="stylesheet" href="style_unstable/tabs.css">
+  <link rel="stylesheet" href="style_unstable/toolbars.css">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="icons/styles/action_icons.css">
+  <link rel="stylesheet" href="icons/styles/media_icons.css">
+  <link rel="stylesheet" href="icons/styles/comms_icons.css">
+  <link rel="stylesheet" href="icons/styles/settings_icons.css">
+
+  <!-- Transitions -->
+  <link rel="stylesheet" href="transitions.css">
+  
+  <!-- Util CSS: some extra tricks -->
+  <link rel="stylesheet" href="util.css">
+  <link rel="stylesheet" href="fonts.css">
+
+  <!-- Additional markup to make Building Blocks kind of cross browser -->
+  <link rel="stylesheet" href="cross_browser.css">
+
+  <style>
+    #index {
+      height: 100%;
+    }
+    [data-position="right"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transform: translateX(100%);
+      -webkit-transform: translateX(100%);
+      z-index: 15;
+      z-index: 100; /* -> drawer */
+    }
+    section[role="region"][data-position="right"] {
+      position: absolute;
+    }
+    [data-position="right"].current {
+      animation: rightToCurrent 0.4s forwards;
+      -webkit-animation: rightToCurrent 0.4s forwards;
+    }
+    [data-position="right"].right {
+      animation: currentToRight 0.4s forwards;
+      -webkit-animation: currentToRight 0.4s forwards;
+    }
+    [data-position="current"].left {
+      animation: currentToLeft 0.4s forwards;
+      -webkit-animation: currentToLeft 0.4s forwards;
+    }
+    [data-position="current"].current {
+      animation: leftToCurrent 0.4s forwards;
+      -webkit-animation: leftToCurrent 0.4s forwards;
+    }
+    [data-position="back"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      opacity: 0;
+      /* z-index: 100; -> drawer */
+    }
+    [data-position="back"].fade-in {
+      z-index: 120;
+      animation: fadeIn 0.2s forwards;
+      -webkit-animation: fadeIn 0.2s forwards;
+    }
+    [data-position="back"].fade-out {
+      animation: fadeOut 0.2s forwards;
+      -webkit-animation: fadeOut 0.2s forwards;
+    }
+
+    [data-position="edit-mode"] {
+      position: absolute;
+      top: -5rem;
+      left: 0;
+      right: 0;
+      bottom: -7rem;
+      z-index: -1;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    [data-position="edit-mode"].edit {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 120;
+      opacity: 1;
+    }
+
+    /* Headers */
+    #headers section[role="region"] {
+      margin-bottom: 1.5rem;
+    }
+    #headers section[role="region"]:not(#drawer) {
+      display: inline;
+    }
+    #headers article header:first-child {
+      margin-top: 1.5rem;
+    }
+    #headers section[role="region"] header h2 {
+      margin: 0 0 1.5rem 0;
+    }
+
+    /* Lists */
+    /* to avoid double background effect on press */
+    [data-type=list] li>a:active { 
+      background-color: transparent;
+    }
+
+    /* Drawer */
+    section[role="region"]:not(#drawer) {
+      transition: none;
+      left: 0;
+      z-index: 0;
+      padding-left: 0;
+    }
+    section[data-type="sidebar"] + section[role="region"] > header:first-child > button, 
+    section[data-type="sidebar"] + section[role="region"] > header:first-child > a {
+      background-position: 3.5rem center;
+    }
+
+    /* Switches */
+    #switches label:last-child {
+      margin-left: 2rem;  
+    }
+
+    /* Scrolling */
+    nav[data-type="scrollbar"] {
+      padding-top: 1rem;
+    }
+    nav[data-type="scrollbar"] p {
+      opacity: 1;
+    }
+
+    /* Seek bars */
+    div[role="slider"] > label.icon {
+      background: no-repeat right top;
+      background-size: 3rem auto;
+    }
+    
+    /* Tabs */
+    #tabs .content {
+      padding: 0;
+    }
+    #tabs .content .content {
+      padding: 1.5rem 3rem;
+    }
+
+    /* Filters */
+    [role="tablist"][data-type="filter"] {
+      margin-bottom: 2rem;
+    }
+
+    .bottom[role="tablist"][data-type="filter"] {
+      bottom: auto;
+    }
+
+    /* Device rotation */
+    .landscape section[role="region"]#drawer > header:first-child {
+      /* Whatever needs to be changed on landscape */
+    }
+  </style>
+</head>
+<body>
+<section id="index" data-position="current">
+    <section data-type="sidebar">
+      <header>
+        <menu type="toolbar">
+          <a href="#">Done</a>
+        </menu>
+        <h1>Customization</h1>
+      </header>
+      <nav>
+        <h2>Kernel Customize</h2>
+		<ul>
+          <li><a id ="btn-CPUcontrol" href="#">CPU control</a></li>
+          <li><a id ="btn-Gammacontrol"href="#">Color Gramma</a></li>
+          <li><a href="#">Utility</a></li>
+        </ul>
+        <h2>Other tools</h2>
+        <ul>
+          <li><a href="#">Terminal Emulator</a></li>
+        </ul>
+      </nav>
+    </section>
+    <section id="drawer" role="region">
+      <header class="fixed">
+        <a href="#"><span class="icon icon-menu">hide sidebar</span></a>
+        <a href="#drawer"><span class="icon icon-menu">show sidebar</span></a>
+        <h1>Pure Control <em>Alpha</em></h1>
+      </header>
+      <article class="content scrollable header">
+        <div data-type="list">
+          <ul>
+		  <li>
+              <a id="btn-customize-drawer" href="#drawer">
+                <p>Customize</p>
+              </a>
+            </li>
+		  <li>
+              <a id="btn-xda-thread" href="http://forum.xda-developers.com/showthread.php?t=2388237">
+                <p>XDA thread</p>
+              </a>
+            </li>
+            <li>
+              <a id="btn-action-menu" href="#">
+                <p>Action menu</p>
+              </a>
+            </li>
+            <li>
+              <a id="btn-buttons" href="#">
+                <p>Buttons</p>
+              </a>
+            </li>
+			<li>
+              <a id="btn-lists" href="#">
+                <p>Lists</p>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </section> <!-- end drawer -->
+  </section> <!-- end index -->
+  
+    <!--·························· Action menu ··························-->
+  <section id="action-menu" data-position="back" class="fullscreen">
+    <form role="dialog" data-type="action">
+      <header> Title </header> <!-- this header is optional -->
+      <menu>
+        <button> Action 1 </button>
+        <button disabled> Action 2 (disabled) </button>
+        <button> Action 3 </button>
+        <button> Cancel </button>
+      </menu>
+    </form>
+  </section>
+    <!--···························· CPU Control····························-->
+  <section role="region" id="CPUcontrol" data-position="right">
+    <header class="fixed">
+      <a id="btn-CPUcontrol-back" href="#"><span class="icon icon-back">back</span></a>
+	  <menu type="toolbar">
+            <button><span class="icon icon-edit">edit</span></button>
+			</menu>
+      <h1>CPUcontrol</h1>
+	   
+    </header>
+
+    <article class="content scrollable header">
+      <header><h2>Frequency</h2></header>
+      <div>
+        <ul class="compact">
+          <li>
+            <label>Normal Max CPU Frequency</label>
+            <button class="icon icon-dialog">Action 1</button>
+          </li>
+          <li>
+            <label>Normal Min CPU Frequency</label>
+            <button class="icon icon-dialog">Action 2</button>
+          </li>
+          <li>
+            <label>Screen-Off Max CPU Frequency</label>
+            <button class="icon icon-dialog">Action 1</button>
+          </li>
+          <li>
+            <label>Screen-Off Min CPU Frequency</label>
+            <button class="icon icon-dialog">Action 2</button>
+          </li>
+
+        </ul>
+      </div>
+ <header><h2> Governor</h2></header>
+      <div>
+        <ul class="compact">
+          <li>
+            <label>CPU Governor</label>
+            <button class="icon icon-dialog">Action 1</button>
+          </li>
+        </ul>
+      </div>
+ <header><h2> Core Magnament</h2></header>
+      <div>
+        <ul class="compact">
+          <li>
+            <label>Max Online core</label>
+            <button class="icon icon-dialog">Action 1</button>
+          </li>
+		   <li>
+            <label>Min Online core</label>
+            <button class="icon icon-dialog">Action 1</button>
+          </li>
+        </ul>
+      </div>
+	
+    </article>
+	
+  </section> 
+  
+   <!--···························· Color Gamma····························-->
+  <section role="region" id="Gammacontrol" data-position="right">
+    <header class="fixed">
+      <a id="btn-Gammacontrol-back" href="#"><span class="icon icon-back">back</span></a>
+	  <menu type="toolbar">
+            <button><span class="icon icon-edit">edit</span></button>
+			</menu>
+      <h1>Color Gamma</h1>
+	   
+    </header>
+
+    <article class="content scrollable header">
+      <header><h2>Color Caribration</h2></header>
+      <div>
+        <ul class="compact">
+          <li>
+            <label>Red</label>
+            <input type="number" min="1" max="255" style="background-color:#F5A9A9;" />
+          </li>
+          <li>
+            <label>Blue</label>
+            <input type="number" min="1" max="255"  style="background-color:#A9F5F2;" />
+          </li>
+          <li>
+            <label>Green</label>
+            <input type="number" min="1" max="255" style="background-color:#BCF5A9;" />
+          </li>
+
+        </ul>
+      </div>
+<header><h2>Gamma Caribration</h2></header>
+      <div>
+        <ul class="compact">
+          <li>
+            <label>Brightness</label>
+            <input type="number" min="1" max="255" />
+          </li>
+          <li>
+            <label>Contrast</label>
+            <input type="number" min="1" max="255" />
+          </li>
+          <li>
+            <label>Saturation</label>
+            <input type="number" min="1" max="255" />
+          </li>
+
+        </ul>
+      </div>
+	  <header><h2>Red Caribration</h2></header>
+      <div>
+        <ul class="compact">
+          <li>
+            <label>Grey</label>
+            <input type="number" min="1" max="255" style="background-color:#F5A9A9;" />
+          </li>
+          <li>
+            <label>Mids</label>
+            <input type="number" min="1" max="255" style="background-color:#F5A9A9;" />
+          </li>
+          <li>
+            <label>Black</label>
+            <input type="number" min="1" max="255" style="background-color:#F5A9A9;" />
+          </li>
+		   <li>
+            <label>White</label>
+            <input type="number" min="1" max="255" style="background-color:#F5A9A9;" />
+          </li>
+
+
+        </ul>
+      </div>
+	  <header><h2>Blue Caribration</h2></header>
+      <div>
+        <ul class="compact">
+         <li>
+            <label>Grey</label>
+            <input type="number" min="1" max="255" style="background-color:#A9F5F2;" />
+			
+          </li>
+          <li>
+            <label>Mids</label>
+            <input type="number" min="1" max="255" style="background-color:#A9F5F2;" />
+          </li>
+          <li>
+            <label>Black</label>
+            <input type="number" min="1" max="255" style="background-color:#A9F5F2;" />
+          </li>
+		   <li>
+            <label>White</label>
+            <input type="number" min="1" max="255" style="background-color:#A9F5F2;" />
+          </li>
+
+        </ul>
+      </div>
+	  <header><h2>Green Caribration</h2></header>
+      <div>
+        <ul class="compact">
+          <li>
+            <label>Grey</label>
+            <input type="number" min="1" max="255" style="background-color:#BCF5A9;" />
+          </li>
+          <li>
+            <label>Mids</label>
+            <input type="number" min="1" max="255" style="background-color:#BCF5A9;" />
+          </li>
+          <li>
+            <label>Black</label>
+            <input type="number" min="1" max="255"style="background-color:#BCF5A9;" />
+          </li>
+		   <li>
+            <label>White</label>
+            <input type="number" min="1" max="255" style="background-color:#BCF5A9;" />
+          </li>
+        </ul>
+      </div>
+    </article>
+	
+  </section> 
+    
+  <script type="text/javascript" defer src="js/status.js"></script>
+  <script type="text/javascript" defer src="js/seekbars.js"></script>
+  <script type="text/javascript" defer src="js/app.js"></script>
+  <script type="text/javascript" defer >
+  //CPUControl
+document.querySelector('#btn-CPUcontrol').addEventListener ('click', function () {
+  document.querySelector('#CPUcontrol').className = 'current';
+  document.querySelector('[data-position="current"]').className = 'left';
+});
+document.querySelector('#btn-CPUcontrol-back').addEventListener ('click', function () {
+  document.querySelector('#CPUcontrol').className = 'right';
+  document.querySelector('[data-position="current"]').className = 'current';
+});
+//Gammacontrol
+document.querySelector('#btn-Gammacontrol').addEventListener ('click', function () {
+  document.querySelector('#Gammacontrol').className = 'current';
+  document.querySelector('[data-position="current"]').className = 'left';
+});
+document.querySelector('#btn-Gammacontrol-back').addEventListener ('click', function () {
+  document.querySelector('#Gammacontrol').className = 'right';
+  document.querySelector('[data-position="current"]').className = 'current';
+});
+
+</script>
+
+
+  </body>
+</html>
