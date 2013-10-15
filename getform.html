@@ -1,0 +1,19 @@
+<html>
+<head>
+<script type="text/javascript" >
+function setValue()
+{
+	document.getElementById("hiddening").value="What happen?"
+}
+function myFunction()
+{
+	alert(document.getElementById("hiddening").value);
+	document.getElementById("btm").value=55;
+}
+</script>
+</head>
+<body onload="setValue()">
+	<input type="hidden" id="hiddening" name="hiddening" />
+	<input type="button" onclick="myFunction()" value="" id="btm" />
+</body>
+</html>

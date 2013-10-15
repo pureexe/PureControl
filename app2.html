@@ -286,7 +286,7 @@
         <ul class="compact">
           <li>
             <label>Normal Max CPU Frequency</label>
-            <button class="icon icon-dialog">Action 1</button>
+            <button class="icon icon-dialog" id="btn-set-cpu-normal-max">SetCpu</button>
           </li>
           <li>
             <label>Normal Min CPU Frequency</label>
@@ -329,6 +329,28 @@
     </article>
 	
   </section> 
+<!--··························CPU Action menu ··························-->
+  <section id="action-menu-cpu-normal-max" data-position="back" class="fullscreen">
+    <form role="dialog" data-type="action">
+      <header> CPU Frequency </header> <!-- this header is optional -->
+      <menu>
+			<button onclick="window.alert('19200')">19200</button>
+			<button>384000</button>
+			<button>540000</button>
+			<button>702000</button>
+			<button>1026000</button>
+			<button>1242000</button>
+			<button>1350000</button>
+			<button>1512000</button>
+			<button>1620000</button>
+			<button>1728000</button>
+			<button>1836000</button>
+			<button>1944000</button>
+			<button>2052000</button>
+			<button>Cancle</button>
+      </menu>
+    </form>
+  </section>
   
    <!--···························· Color Gamma····························-->
   <section role="region" id="Gammacontrol" data-position="right">
@@ -460,54 +482,23 @@
     </header>
 
     <article class="content scrollable header">
-      <header><h2><label class="pack-switch">Sweep2wake<input type="checkbox" checked><span></span></label></h2></header>
-	  
-        
-        
- 
+      <header><h2><label>Sweep2wake<input type="checkbox" checked><span></span></label></h2></header>
       <div>
         <ul class="compact">
           <li>
           <label>
-    
-       k
-      </label>
+			Start Point
+			</label>
           </li>
           <li>
-            <label>Normal Min CPU Frequency</label>
+            <label>Mid Point</label>
             <button class="icon icon-dialog">Action 2</button>
           </li>
           <li>
-            <label>Screen-Off Max CPU Frequency</label>
+            <label>End point</label>
             <button class="icon icon-dialog">Action 1</button>
-          </li>
-          <li>
-            <label>Screen-Off Min CPU Frequency</label>
-            <button class="icon icon-dialog">Action 2</button>
           </li>
 
-        </ul>
-      </div>
- <header><h2> Governor</h2></header>
-      <div>
-        <ul class="compact">
-          <li>
-            <label>CPU Governor</label>
-            <button class="icon icon-dialog">Action 1</button>
-          </li>
-        </ul>
-      </div>
- <header><h2> Core Magnament</h2></header>
-      <div>
-        <ul class="compact">
-          <li>
-            <label>Max Online core</label>
-            <button class="icon icon-dialog">Action 1</button>
-          </li>
-		   <li>
-            <label>Min Online core</label>
-            <button class="icon icon-dialog">Action 1</button>
-          </li>
         </ul>
       </div>
 	
@@ -524,6 +515,14 @@ document.querySelector('#btn-CPUcontrol').addEventListener ('click', function ()
   document.querySelector('#CPUcontrol').className = 'current';
   document.querySelector('[data-position="current"]').className = 'left';
 });
+//cpu dialog
+document.querySelector('#btn-set-cpu-normal-max').addEventListener ('click', function () {
+  document.querySelector('#action-menu-cpu-normal-max').className = 'fade-in';
+});
+document.querySelector('#action-menu-cpu-normal-max').addEventListener ('click', function () {
+  this.className = 'fade-out';
+});
+
 document.querySelector('#btn-CPUcontrol-back').addEventListener ('click', function () {
   document.querySelector('#CPUcontrol').className = 'right';
   document.querySelector('[data-position="current"]').className = 'current';
